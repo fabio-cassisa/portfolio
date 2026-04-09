@@ -1,28 +1,60 @@
 export const info = {
   baseUrl: "https://portfolio24-dagas.netlify.app/",
   name: "Fabio Cassisa",
-  jobDescription: "Design Technologist/Front-end Developer",
-  about: `I am a designer/front-end developer based in Europe, you usually find me in Malmö, Copenaghen or Turin.
-   In my whole life I have always been fascinated by design and technology. I started as a product designer graduating in Politecnico di Torino. I moved forward learning more into the field of HCI at KTH (during my exchange) and IxD at Malmö Uni. 
-   Finally gravitating towards front-end developing and creative coding, graduating lastly in a YH UpSkill Course at Technigo, Stockholm. 
-   I want to get new experience within Web Development. I know and have knowledge around design processes, agile methodologies, research methodologies.
-   Design tools I use daily: Figma, Adobe CC, Affinity Designer, Blender, Rhinoceros. 
-   Tech stack I play around the most: HTML, CSS (Tailwind CSS, SASS), Javascript, React, GSAP.js, D3.js, Git Version Control. I am learning: Astro, Next.js, Typescript, Node.js. 
+  jobDescription: "Creative Developer",
+  about: `I am a creative developer based in Europe — you usually find me in Copenhagen, Malmö or Turin.
+   I have always been drawn to the intersection of design and technology. I started as a product designer at Politecnico di Torino, explored HCI at KTH during an exchange year, and studied Interaction Design at Malmö University.
+   I then moved into front-end development and creative coding, completing a JS/React upskill course at Technigo. Today I work as a Creative Developer at Adnami, building high-impact ad formats and maintaining internal development pipelines.
+   Design tools: Figma, Adobe CC, Affinity Designer, Blender.
+   Tech stack: HTML, CSS, JavaScript, TypeScript, React, Astro, GSAP, Node.js, Git.
   `,
 
   experience: [
     {
-      name: "4Foodies, SRL",
-      location: "Turin, Italy",
-      startDate: "Jan 2021",
+      name: "Adnami — Creative Developer",
+      location: "Copenhagen, Denmark",
+      startDate: "Jun 2025",
       endDate: "Present",
       description: [
-        "- Designing the brand, making the logo and its brand guidelines",
-        "- Designing & prototyping a mobile application using Figma",
-        "- Working making a first website based in Wordpress with some custom PHP",
-        "- Developing now a new SPA landing for the project -ongoing",
-        "- Working on a custom web application learning Python (for Django)",
-        "- Working on a custom web application learning some basics of Ruby (for Ruby on Rails)",
+        "- Maintaining the internal Formats' development pipeline",
+        "- Building and shipping high-impact ad creatives (Skin, Midscroll, TopScroll)",
+        "- Taking on more responsibilities across design research and tooling",
+      ],
+    },
+
+    {
+      name: "Adnami — Junior Creative Developer",
+      location: "Copenhagen, Denmark",
+      startDate: "Jun 2024",
+      endDate: "Jun 2025",
+      description: [
+        "- Built globally certified templates for executing high-impact ad formats programmatically",
+        "- Worked with HTML, CSS, JavaScript, GSAP, and internal tooling",
+        "- Collaborated closely with design and product teams on format delivery",
+      ],
+    },
+
+    {
+      name: "4Foodies — Advisor",
+      location: "Turin, Italy (Remote)",
+      startDate: "Oct 2023",
+      endDate: "Apr 2025",
+      description: [
+        "- Transitioned from a hands-on developer/designer role to advisory",
+        "- Provided strategic guidance on tech direction and product decisions",
+      ],
+    },
+
+    {
+      name: "4Foodies — Developer/Designer & Shareholder",
+      location: "Turin, Italy",
+      startDate: "Jan 2021",
+      endDate: "Oct 2023",
+      description: [
+        "- Designed the brand identity, logo, and brand guidelines",
+        "- Designed & prototyped a mobile application in Figma",
+        "- Built the first website in Wordpress with custom PHP",
+        "- Developed a new SPA landing page for the project",
       ],
     },
 
@@ -33,8 +65,8 @@ export const info = {
       endDate: "Jan 2023",
       description: [
         "- Used Design Research Methods to gather insights for Design Navigator: a tool to guide designers/developers for their future career",
-        "- Produced PP presentations on Figma and Keynotes",
-        "- Worked on UI elements for the main websites: Design Disciplin",
+        "- Produced presentations in Figma and Keynote",
+        "- Worked on UI elements for the main website",
       ],
     },
 
@@ -45,8 +77,8 @@ export const info = {
       endDate: "Dec 2021",
       description: [
         "- Produced 2D and 3D content for an NFT blockchain project promoted by KTH incubators",
-        "- Worked side-by-side with a Solidity developer learning some basics of it",
-        "- Worked with Wordpress and some HTML, CSS, Javascript",
+        "- Worked side-by-side with a Solidity developer",
+        "- Built with Wordpress, HTML, CSS, and JavaScript",
       ],
     },
     {
@@ -56,8 +88,8 @@ export const info = {
       endDate: "Jul 2021",
       description: [
         "- Worked in the ComIn dept., design team",
-        "- Worked with Autodesk 3ds Max with the IKEA library to create display layouts for the store",
-        "- Managed new product launches, produced new display furniture (designed and then built with wood)",
+        "- Created display layouts using Autodesk 3ds Max with the IKEA library",
+        "- Managed new product launches, designed and built display furniture",
       ],
     },
     {
@@ -66,10 +98,10 @@ export const info = {
       startDate: "Sep 2020",
       endDate: "Jan 2021",
       description: [
-        "- Worked in a team of designers and developers with Agile and Scrum methodologies",
-        "- Produced different assets with Adobe XD, Adobe Photoshop and Adobe Illustrator",
-        "- Worked with clients for their websites: wireframing in Adobe XD and developing with Wordpress and custom code",
-        "- Experimented web animations, data viz, 2D and 3D elements using GSAP.js, Three.js and d3.js",
+        "- Worked in a team of designers and developers using Agile and Scrum",
+        "- Produced assets with Adobe XD, Photoshop, and Illustrator",
+        "- Wireframed and developed client websites with Wordpress and custom code",
+        "- Experimented with web animations, data viz, 2D/3D using GSAP.js, Three.js, and D3.js",
       ],
     },
   ],
@@ -110,10 +142,8 @@ export const info = {
   ],
 
   socialMedia: {
-    facebook: "https://www.facebook.com/FabioCassisa",
-    twitter: "https://twitter.com/FabioCassisa",
+    twitter: "https://x.com/FabioCassisa",
     github: "https://github.com/fabio-cassisa",
-    email: "mailto:cassisafabio97@gmail.com",
     linkedin: "https://www.linkedin.com/in/fabiocassisa/",
   },
 
@@ -144,14 +174,14 @@ export const info = {
       isFeatured: true,
       thumbnail: "/assets/images/weatherApp.png",
       githubUrl: "https://github.com/fabio-cassisa/project-weather-app",
-      liveUrl: "project-weather-app-sigma.vercel.app",
+      liveUrl: "https://project-weather-app-teal.vercel.app",
     },
     {
       title: "Project Happy Thoughts",
       isFeatured: false,
       thumbnail: "/assets/images/happyThoughts.png",
       githubUrl: "https://github.com/fabio-cassisa/project-happy-thoughts",
-      liveUrl: "project-weather-app-sigma.vercel.app",
+      liveUrl: "",
     },
     {
       title: "Spotify Music Release",
@@ -179,7 +209,7 @@ export const info = {
       isFeatured: false,
       thumbnail: "/assets/images/projectTodo.png",
       githubUrl: "https://github.com/fabio-cassisa/Todo",
-      liveUrl: "https://project-todo-list-peach.vercel.app/",
+      liveUrl: "https://project-todo-list-beta.vercel.app/",
     },
   ],
 };
