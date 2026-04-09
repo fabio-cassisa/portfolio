@@ -1,55 +1,68 @@
-# Portfolio Website, 24 - Astro
+# astro-folio24
 
-My portfolio website made in Astro, Tailwind CSS and Typescript. The website showcases the developer's skills, projects, and contact information. The website is responsive, accessible, and SEO-friendly. The initial source code is taken from [@uzzii-21](https://github.com/uzzii-21/astro-portfolio), who made a clean public template to start from and I give a big thanks and credit!
+personal portfolio site — experience, education, and project showcase. dark-first with theme toggle, auto-generated sitemap, and SEO meta tags out of the box.
 
-## 🚀 Project Structure
+## context
 
-Inside of this Astro portfolio website, you'll see the following folders and files:
+built on top of [uzair ahmed's astro portfolio template](https://github.com/uzzii-21/astro-portfolio). the template provided a clean starting point — i customized the content, added experience entries, swapped social links, and fixed up project URLs and metadata over time.
+
+the design is intentionally minimal. content lives in a single `info.ts` data file that drives the entire site — experience, education, projects, and social links.
+
+## stack
+
+`astro 1` · `tailwind css` · `typescript` · `netlify`
+
+## structure
 
 ```
-/
-├── public/
-│   ├── assets
-│   │   ├── fonts
-|   |   └── images
-│   └── favicon.ico
-├── src/
-│   ├── components/
-│   │   ├── home/
-|   |   └── general/
-|   |       ├── Header.astro
-|   |       ├── Footer.astro
-|   |       └── ...
-│   ├── data/
-│   ├── layouts/
-│   |   |── Layout.astro
-│   |   └── ...
-│   ├── pages/
-│   |   ├── peojects.astro
-│   |   ├── index.astro
-│   ├── styles/
-│   |   |── custom-styles.css
-│   |   |── fonts.css
-│   |   └── styles.css
-│   ├── types/
-│   ├── utils/
-├── package.json
-└── ...
+src/
+├── components/
+│   ├── general/
+│   │   ├── Footer.astro          # social links (X, GitHub, LinkedIn)
+│   │   ├── MetaHead.astro        # SEO, OG tags, favicons
+│   │   ├── Navbar.astro          # logo + theme toggle
+│   │   ├── ProjectCard.astro     # thumbnail with hover overlay + links
+│   │   └── ProjectsWrapper.astro # responsive grid wrapper
+│   └── home/
+│       ├── Experience.astro      # timeline section (experience + education)
+│       └── Hero.astro            # intro section
+├── data/
+│   └── info.ts                   # all content lives here — single source of truth
+├── layouts/
+│   └── Layout.astro              # navbar + main + footer shell
+├── pages/
+│   ├── index.astro               # home — hero, experience, featured projects
+│   └── projects.astro            # all projects grid
+├── styles/
+│   ├── custom-styles.css         # gradient heading animation
+│   ├── fonts.css                 # Inter + Outfit @font-face declarations
+│   └── style.css                 # tailwind layers + component styles
+├── types/
+│   └── index.ts                  # TypeScript interfaces
+└── utils/
+    └── index.ts                  # logo helper (initials from name)
 ```
 
-## 🧞 Commands
+## setup
 
-All commands are run from the root of the project, from a terminal:
+```bash
+npm install
+npm run dev       # localhost:3000
+npm run build     # static output → dist/
+```
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
+## notes
 
-## 👀 Want to learn more?
+- all content is driven from `src/data/info.ts` — edit that file to update experience, projects, or social links
+- theme toggle persists via localStorage with `prefers-color-scheme` as default
+- sitemap and robots.txt are auto-generated via astro integrations
+- self-hosted Inter and Outfit fonts (all weights) in `public/assets/fonts/`
+- astro v1 — upgrade to v4+ is planned but not yet done
 
-Feel free to check [Astro documentation](https://docs.astro.build) or jump into Astro [Discord server](https://astro.build/chat).
+## status
+
+🟢 live — [portfolio24-dagas.netlify.app](https://portfolio24-dagas.netlify.app)
+
+---
+
+<sub>built by [fabio cassisa](https://github.com/fabio-cassisa) · template by [uzair ahmed](https://github.com/uzzii-21)</sub>
