@@ -1,0 +1,16 @@
+---
+interface Props {
+  label: string;
+  id?: string;
+}
+
+const { label, id } = Astro.props;
+---
+
+<div class="flex items-center gap-3 mb-6" id={id}>
+  <span class="text-[var(--color-accent)] font-bold text-sm">></span>
+  <h2 class="text-sm font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+    {label}
+  </h2>
+  <div class="flex-1 border-t border-dashed border-[var(--color-border)]"></div>
+</div>

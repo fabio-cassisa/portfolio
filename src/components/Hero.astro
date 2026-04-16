@@ -1,0 +1,17 @@
+---
+import { info } from '@data/info';
+---
+
+<section class="mb-16">
+  <p class="text-sm text-[var(--color-text-muted)] mb-2">hey, i'm</p>
+  <h1 class="text-3xl md:text-5xl font-bold text-[var(--color-accent)] mb-1 leading-tight">
+    {info.name.toLowerCase()}<span class="cursor" aria-hidden="true"></span>
+  </h1>
+  <p class="text-lg text-[var(--color-cyan)] mb-8">{info.title}</p>
+
+  <div class="space-y-3 text-sm leading-relaxed max-w-2xl">
+    {info.about.map((paragraph) => (
+      <p class="text-[var(--color-text)]">{paragraph}</p>
+    ))}
+  </div>
+</section>

@@ -1,68 +1,57 @@
-# astro-folio24
+# portfolio
 
-personal portfolio site — experience, education, and project showcase. dark-first with theme toggle, auto-generated sitemap, and SEO meta tags out of the box.
+terminal-inspired personal site — dark-first, monospace, interactive.
 
-## context
+built because every portfolio i made before felt too polite.  
+this one boots like a system, runs like a terminal, and hides things for people who poke around.
 
-built on top of [uzair ahmed's astro portfolio template](https://github.com/uzzii-21/astro-portfolio). the template provided a clean starting point — i customized the content, added experience entries, swapped social links, and fixed up project URLs and metadata over time.
+### live
 
-the design is intentionally minimal. content lives in a single `info.ts` data file that drives the entire site — experience, education, projects, and social links.
+🟢 [dagas.dev](https://dagas.dev)
 
-## stack
+### what's in here
 
-`astro 1` · `tailwind css` · `typescript` · `netlify`
+- **terminal ui** — collapsible command-line at the bottom of every page. real commands (`help`, `ls`, `cat <project>`, `neofetch`), tab completion, command history, and 30+ easter eggs
+- **neofetch block** — tech stack rendered as a system info dump
+- **project tiers** — flagship and supporting projects, each in terminal-window cards
+- **experience + education** — full timeline, no fluff
+- **view transitions** — smooth page morphs via astro's client router
+- **custom 404** — terminal-themed "file not found"
+- **og card** — auto-generated terminal-style social preview
 
-## structure
+### stack
+
+`astro` · `tailwind v4` · `typescript` · `jetbrains mono`
+
+### design decisions
+
+- dark-only — the terminal _is_ the design. no light mode toggle
+- crt scanlines, green accent (#4ade80), macOS window chrome
+- all images compressed to webp (~96KB total for 5 thumbnails)
+- zero platform-specific emoji in the UI — text characters inherit theme color
+- easter eggs reward curiosity: `hack`, `matrix`, `rm -rf /`, `crash`, `reboot`, `disco`, and more
+
+### run locally
+
+```sh
+npm install
+npm run dev       # localhost:4321
+npm run build     # static output in dist/
+```
+
+### structure
 
 ```
 src/
-├── components/
-│   ├── general/
-│   │   ├── Footer.astro          # social links (X, GitHub, LinkedIn)
-│   │   ├── MetaHead.astro        # SEO, OG tags, favicons
-│   │   ├── Navbar.astro          # logo + theme toggle
-│   │   ├── ProjectCard.astro     # thumbnail with hover overlay + links
-│   │   └── ProjectsWrapper.astro # responsive grid wrapper
-│   └── home/
-│       ├── Experience.astro      # timeline section (experience + education)
-│       └── Hero.astro            # intro section
-├── data/
-│   └── info.ts                   # all content lives here — single source of truth
-├── layouts/
-│   └── Layout.astro              # navbar + main + footer shell
-├── pages/
-│   ├── index.astro               # home — hero, experience, featured projects
-│   └── projects.astro            # all projects grid
-├── styles/
-│   ├── custom-styles.css         # gradient heading animation
-│   ├── fonts.css                 # Inter + Outfit @font-face declarations
-│   └── style.css                 # tailwind layers + component styles
-├── types/
-│   └── index.ts                  # TypeScript interfaces
-└── utils/
-    └── index.ts                  # logo helper (initials from name)
+├── components/   # navbar, footer, hero, neofetch, terminal, project cards
+├── data/         # info.ts — all content lives here
+├── layouts/      # single layout with view transitions
+├── pages/        # index, projects, 404
+└── styles/       # global.css — terminal design system
 ```
 
-## setup
-
-```bash
-npm install
-npm run dev       # localhost:3000
-npm run build     # static output → dist/
-```
-
-## notes
-
-- all content is driven from `src/data/info.ts` — edit that file to update experience, projects, or social links
-- theme toggle persists via localStorage with `prefers-color-scheme` as default
-- sitemap and robots.txt are auto-generated via astro integrations
-- self-hosted Inter and Outfit fonts (all weights) in `public/assets/fonts/`
-- astro v1 — upgrade to v4+ is planned but not yet done
-
-## status
-
-🟢 live — [portfolio24-dagas.netlify.app](https://portfolio24-dagas.netlify.app)
+update `src/data/info.ts` to change what the site displays.
 
 ---
 
-<sub>built by [fabio cassisa](https://github.com/fabio-cassisa) · template by [uzair ahmed](https://github.com/uzzii-21)</sub>
+<sub>built by fabio cassisa</sub>

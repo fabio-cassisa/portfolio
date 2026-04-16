@@ -1,0 +1,33 @@
+---
+import { info } from '@data/info';
+
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { href: '/', label: '~' },
+  { href: '/projects', label: '~/projects' },
+];
+---
+
+<nav class="mb-12 md:mb-20 flex items-center justify-between">
+  <div class="flex items-center gap-6">
+    {
+      links.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'text-sm transition-colors',
+            currentPath === link.href
+              ? 'text-[var(--color-accent)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </div>
+  <span class="text-xs text-[var(--color-text-muted)]">
+    {info.handle}@web
+  </span>
+</nav>

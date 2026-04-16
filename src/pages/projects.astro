@@ -1,27 +1,34 @@
 ---
-import { info } from "@data";
+import Layout from '@layouts/Layout.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import SectionHeader from '@components/SectionHeader.astro';
+import { info } from '@data/info';
 
-import ProjectsWrapper from "@components/general/ProjectsWrapper.astro";
-import MetaHead from "@components/general/MetaHead.astro";
-import Layout from "@layouts/Layout.astro";
-
-const Projects = info.projects.map((project) => project);
+const tier1 = info.projects.filter((p) => p.tier === 1);
+const tier2 = info.projects.filter((p) => p.tier === 2);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <MetaHead
-      title={"Projects"}
-      description={"All projects are available in this page."}
-      ogImageUrl={"/assets/images/profile.png"}
-    />
-  </head>
+<Layout title="projects — dagas" description="all projects by fabio cassisa.">
+  <section class="mb-16">
+    <SectionHeader label="projects" />
+    <p class="text-xs text-[var(--color-text-muted)] mb-8">
+      <span class="text-[var(--color-accent)]">$</span> ls -la ~/projects
+    </p>
 
-  <body>
-    <Layout>
-      <h1 style="line-height: 1.2;">Projects</h1>
-      <ProjectsWrapper projects={Projects} />
-    </Layout>
-  </body>
-</html>
+    {/* tier 1 */}
+    <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">
+      // flagship
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+      {tier1.map((project) => <ProjectCard project={project} />)}
+    </div>
+
+    {/* tier 2 */}
+    <h3 class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-widest mb-4">
+      // supporting
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {tier2.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,212 @@
+@import 'tailwindcss';
+
+/* ============================================
+   terminal design system
+   dark-first, monospace, CRT-inspired
+   ============================================ */
+
+@theme {
+  /* terminal palette */
+  --color-bg: #0a0a0f;
+  --color-bg-raised: #12121a;
+  --color-bg-surface: #1a1a26;
+  --color-border: #2a2a3a;
+  --color-border-bright: #3a3a50;
+
+  --color-text: #c8c8d0;
+  --color-text-muted: #6a6a80;
+  --color-text-bright: #e8e8f0;
+
+  --color-green: #4ade80;
+  --color-cyan: #22d3ee;
+  --color-amber: #fbbf24;
+  --color-red: #f87171;
+  --color-purple: #a78bfa;
+
+  /* accent = green by default (classic terminal) */
+  --color-accent: #4ade80;
+  --color-accent-dim: #4ade8040;
+
+  /* fonts */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code',
+    ui-monospace, monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+   base styles
+   ============================================ */
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+::selection {
+  background-color: var(--color-accent-dim);
+  color: var(--color-accent);
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-bright);
+}
+
+/* ============================================
+   typography
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
+  color: var(--color-text-bright);
+  font-weight: 600;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--color-cyan);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* ============================================
+   terminal components
+   ============================================ */
+
+/* blinking cursor */
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  background-color: var(--color-accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* prompt prefix */
+.prompt::before {
+  content: '> ';
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* scanline overlay — subtle CRT feel */
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* terminal window chrome */
+.terminal-window {
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot--red { background-color: var(--color-red); }
+.terminal-dot--amber { background-color: var(--color-amber); }
+.terminal-dot--green { background-color: var(--color-green); }
+.terminal-body {
+  padding: 20px;
+}
+
+/* tag pill */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  background: var(--color-bg-surface);
+  transition: all 0.15s ease;
+}
+.tag:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* section divider */
+.divider {
+  border: none;
+  border-top: 1px dashed var(--color-border);
+  margin: 3rem 0;
+}
+
+/* no-signal placeholder for missing thumbnails */
+.no-signal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-surface);
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  min-height: 180px;
+}
+.no-signal::before {
+  content: '[ no signal ]';
+}

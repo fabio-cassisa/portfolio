@@ -1,19 +1,16 @@
-import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
-import robotsTxt from "astro-robots-txt";
-import sitemap from "@astrojs/sitemap";
+// @ts-check
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://portfolio24-dagas.netlify.app",
-  integrations: [
-    tailwind(),
-    sitemap({
-      changefreq: "weekly",
-      priority: 0.7,
-      lastmod: new Date(),
-      entryLimit: 10000,
-    }),
-    robotsTxt(),
-  ],
+  site: 'https://dagas.dev',
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
+  integrations: [sitemap()],
 });

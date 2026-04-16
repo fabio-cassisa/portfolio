@@ -1,0 +1,911 @@
+---
+import { info } from '@data/info';
+
+// serialize the data for the client-side script
+const serializedInfo = JSON.stringify(info);
+---
+
+<div id="terminal" class="terminal-collapsed">
+  {/* collapsed bar */}
+  <button
+    id="terminal-toggle"
+    class="terminal-bar"
+    aria-label="Toggle terminal"
+  >
+    <span class="terminal-bar-prompt">
+      <span class="text-[var(--color-accent)]">dagas</span><span class="text-[var(--color-text-muted)]">@web</span><span class="text-[var(--color-text-muted)]">:</span><span class="text-[var(--color-cyan)]">~</span><span class="text-[var(--color-text-muted)]">$</span>
+    </span>
+    <span class="terminal-bar-hint">type <kbd>help</kbd> or press <kbd>`</kbd></span>
+    <span class="cursor cursor--small" aria-hidden="true"></span>
+  </button>
+
+  {/* expanded terminal */}
+  <div id="terminal-expanded" class="terminal-expanded" aria-hidden="true">
+    <div class="terminal-titlebar">
+      <span class="terminal-dot terminal-dot--red"></span>
+      <span class="terminal-dot terminal-dot--amber"></span>
+      <span class="terminal-dot terminal-dot--green"></span>
+      <span class="ml-2">dagas@web — terminal</span>
+      <button id="terminal-close" class="ml-auto text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-xs px-2" aria-label="Close terminal">
+        ✕
+      </button>
+    </div>
+    <div id="terminal-output" class="terminal-output"></div>
+    <div class="terminal-input-row">
+      <span class="terminal-prompt">
+        <span class="text-[var(--color-accent)]">dagas</span><span class="text-[var(--color-text-muted)]">@web</span><span class="text-[var(--color-text-muted)]">:</span><span class="text-[var(--color-cyan)]" id="terminal-cwd">~</span><span class="text-[var(--color-text-muted)]">$</span>
+      </span>
+      <input
+        id="terminal-input"
+        type="text"
+        class="terminal-input-field"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Terminal input"
+      />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* terminal container */
+  #terminal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    transition: all 0.2s ease;
+  }
+
+  /* collapsed bar */
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    background-color: var(--color-bg-raised);
+    border-top: 1px solid var(--color-border);
+    cursor: pointer;
+    text-align: left;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .terminal-bar:hover {
+    background-color: var(--color-bg-surface);
+  }
+  .terminal-bar-hint {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+  .terminal-bar-hint kbd {
+    padding: 1px 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    font-size: 10px;
+  }
+  .cursor--small {
+    width: 0.5em;
+    height: 0.9em;
+  }
+
+  /* expanded */
+  .terminal-expanded {
+    display: none;
+    flex-direction: column;
+    background-color: var(--color-bg-raised);
+    border-top: 1px solid var(--color-border);
+    height: 45vh;
+    max-height: 400px;
+  }
+
+  @media (max-width: 640px) {
+    .terminal-expanded {
+      height: 55vh;
+      max-height: none;
+    }
+    .terminal-bar-hint {
+      display: none;
+    }
+    .terminal-bar-prompt {
+      font-size: 12px;
+    }
+  }
+  #terminal.terminal-open .terminal-bar {
+    display: none;
+  }
+  #terminal.terminal-open .terminal-expanded {
+    display: flex;
+  }
+
+  /* output area */
+  .terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+  .terminal-output :global(.output-line) {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .terminal-output :global(.output-cmd) {
+    color: var(--color-text-bright);
+    margin-top: 8px;
+  }
+  .terminal-output :global(.output-cmd)::before {
+    content: '$ ';
+    color: var(--color-accent);
+  }
+  .terminal-output :global(.output-result) {
+    color: var(--color-text-muted);
+  }
+  .terminal-output :global(.output-accent) {
+    color: var(--color-accent);
+  }
+  .terminal-output :global(.output-cyan) {
+    color: var(--color-cyan);
+  }
+  .terminal-output :global(.output-amber) {
+    color: var(--color-amber);
+  }
+  .terminal-output :global(.output-error) {
+    color: var(--color-red);
+  }
+  .terminal-output :global(.output-muted) {
+    color: var(--color-text-muted);
+  }
+  .terminal-output :global(a) {
+    color: var(--color-cyan);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .terminal-output :global(a:hover) {
+    color: var(--color-accent);
+  }
+
+  /* input row */
+  .terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+  .terminal-prompt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+  .terminal-input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text-bright);
+    font-family: var(--font-mono);
+    font-size: 16px; /* prevents iOS zoom on focus */
+    caret-color: var(--color-accent);
+    min-width: 0; /* prevents flex overflow on mobile */
+  }
+
+  @media (min-width: 641px) {
+    .terminal-input-field {
+      font-size: 13px;
+    }
+  }
+
+  /* scrollbar inside terminal */
+  .terminal-output::-webkit-scrollbar {
+    width: 4px;
+  }
+  .terminal-output::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .terminal-output::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+</style>
+
+<script is:inline define:vars={{ serializedInfo }}>
+  const info = JSON.parse(serializedInfo);
+
+  const terminal = document.getElementById('terminal');
+  const toggle = document.getElementById('terminal-toggle');
+  const expanded = document.getElementById('terminal-expanded');
+  const output = document.getElementById('terminal-output');
+  const input = document.getElementById('terminal-input');
+  const closeBtn = document.getElementById('terminal-close');
+  const cwdEl = document.getElementById('terminal-cwd');
+
+  let isOpen = false;
+  let commandHistory = [];
+  let historyIndex = -1;
+
+  // current page path for cwd display
+  function getCwd() {
+    const path = window.location.pathname;
+    if (path === '/' || path === '') return '~';
+    return '~' + path.replace(/\/$/, '');
+  }
+
+  function updateCwd() {
+    cwdEl.textContent = getCwd();
+  }
+
+  function openTerminal() {
+    isOpen = true;
+    terminal.classList.add('terminal-open');
+    terminal.classList.remove('terminal-collapsed');
+    expanded.setAttribute('aria-hidden', 'false');
+    input.focus();
+    updateCwd();
+  }
+
+  function closeTerminal() {
+    isOpen = false;
+    terminal.classList.remove('terminal-open');
+    terminal.classList.add('terminal-collapsed');
+    expanded.setAttribute('aria-hidden', 'true');
+  }
+
+  function appendOutput(html, className = 'output-result') {
+    const div = document.createElement('div');
+    div.className = 'output-line ' + className;
+    div.innerHTML = html;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function appendCmd(cmd) {
+    appendOutput(escapeHtml(cmd), 'output-cmd');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ── commands ──────────────────────────────────────
+
+  const commands = {
+    help() {
+      return `<span class="output-accent">available commands:</span>
+
+  <span class="output-cyan">whoami</span>          who am i
+  <span class="output-cyan">about</span>           about me
+  <span class="output-cyan">neofetch</span>        tech stack
+  <span class="output-cyan">ls</span>              list projects
+  <span class="output-cyan">cat &lt;project&gt;</span>   project details
+  <span class="output-cyan">open &lt;project&gt;</span>  open project in browser
+  <span class="output-cyan">history</span>         work experience
+  <span class="output-cyan">education</span>       education
+  <span class="output-cyan">contact</span>         social links
+  <span class="output-cyan">cd &lt;page&gt;</span>       navigate (~ projects)
+  <span class="output-cyan">cowsay &lt;text&gt;</span>   moo
+  <span class="output-cyan">fortune</span>         random wisdom
+  <span class="output-cyan">pwd</span>             current path
+  <span class="output-cyan">date</span>            current date
+  <span class="output-cyan">echo &lt;text&gt;</span>     echo text
+  <span class="output-cyan">clear</span>           clear terminal
+  <span class="output-cyan">exit</span>            close terminal
+
+<span class="output-muted">  ...and maybe some others. try things.</span>`;
+    },
+
+    whoami() {
+      return `<span class="output-accent">${info.name.toLowerCase()}</span>
+<span class="output-muted">${info.title}</span>`;
+    },
+
+    about() {
+      return info.about.map(p => `<span class="output-result">${escapeHtml(p)}</span>`).join('\n');
+    },
+
+    neofetch() {
+      let out = `<span class="output-accent">dagas</span><span class="output-muted">@web</span>\n<span class="output-muted">──────────</span>\n`;
+      for (const [cat, items] of Object.entries(info.stack)) {
+        const label = cat.padEnd(16);
+        const vals = items.join(' · ');
+        out += `<span class="output-cyan">${escapeHtml(label)}</span><span class="output-result">${escapeHtml(vals)}</span>\n`;
+      }
+      return out.trim();
+    },
+
+    ls() {
+      const tier1 = info.projects.filter(p => p.tier === 1);
+      const tier2 = info.projects.filter(p => p.tier === 2);
+
+      let out = '<span class="output-cyan">// flagship</span>\n';
+      tier1.forEach(p => {
+        const priv = p.private ? ' <span class="output-muted">[private]</span>' : '';
+        out += `  <span class="output-accent">${escapeHtml(p.title)}</span>${priv}\n`;
+      });
+      out += '\n<span class="output-muted">// supporting</span>\n';
+      tier2.forEach(p => {
+        out += `  <span class="output-result">${escapeHtml(p.title)}</span>\n`;
+      });
+      return out.trim();
+    },
+
+    cat(args) {
+      const name = args.join(' ').toLowerCase().trim();
+      if (!name) return '<span class="output-error">usage: cat &lt;project-name&gt;</span>';
+
+      const project = info.projects.find(p => p.title.toLowerCase() === name);
+      if (!project) return `<span class="output-error">project not found: ${escapeHtml(name)}</span>\n<span class="output-muted">try: ls</span>`;
+
+      const priv = project.private ? ' <span class="output-muted">[private]</span>' : '';
+      let out = `<span class="output-accent">${escapeHtml(project.title)}</span>${priv}\n`;
+      out += `<span class="output-result">${escapeHtml(project.description)}</span>\n\n`;
+      out += `<span class="output-cyan">tech</span>    ${project.tech.map(t => escapeHtml(t)).join(' · ')}\n`;
+      if (project.github) out += `<span class="output-cyan">src</span>     <a href="${project.github}" target="_blank" rel="noopener">${project.github}</a>\n`;
+      if (project.live) out += `<span class="output-cyan">live</span>    <a href="${project.live}" target="_blank" rel="noopener">${project.live}</a>\n`;
+      return out.trim();
+    },
+
+    open(args) {
+      const name = args.join(' ').toLowerCase().trim();
+      if (!name) return '<span class="output-error">usage: open &lt;project-name&gt;</span>';
+
+      const project = info.projects.find(p => p.title.toLowerCase() === name);
+      if (!project) return `<span class="output-error">project not found: ${escapeHtml(name)}</span>`;
+
+      const url = project.live || project.github;
+      if (!url) return `<span class="output-muted">no public url for ${escapeHtml(project.title)}</span>`;
+
+      window.open(url, '_blank');
+      return `<span class="output-muted">opening ${url} ...</span>`;
+    },
+
+    history() {
+      let out = '';
+      info.experience.forEach(exp => {
+        out += `<span class="output-accent">${escapeHtml(exp.role)}</span> <span class="output-muted">@ ${escapeHtml(exp.company)}</span>\n`;
+        out += `<span class="output-cyan">${escapeHtml(exp.location)}</span>  <span class="output-muted">${escapeHtml(exp.start)} — ${escapeHtml(exp.end)}</span>\n`;
+        exp.description.forEach(d => {
+          out += `  <span class="output-result">– ${escapeHtml(d)}</span>\n`;
+        });
+        out += '\n';
+      });
+      return out.trim();
+    },
+
+    education() {
+      let out = '';
+      info.education.forEach(edu => {
+        out += `<span class="output-accent">${escapeHtml(edu.school)}</span>  <span class="output-muted">${escapeHtml(edu.start)} — ${escapeHtml(edu.end)}</span>\n`;
+        out += `  <span class="output-result">${escapeHtml(edu.degree)}</span>\n\n`;
+      });
+      return out.trim();
+    },
+
+    contact() {
+      let out = '<span class="output-accent">links:</span>\n';
+      for (const [name, url] of Object.entries(info.socialMedia)) {
+        out += `  <span class="output-cyan">${escapeHtml(name.padEnd(12))}</span> <a href="${url}" target="_blank" rel="noopener">${escapeHtml(url)}</a>\n`;
+      }
+      return out.trim();
+    },
+
+    cd(args) {
+      const target = args[0]?.toLowerCase().trim();
+      if (!target || target === '~' || target === '/') {
+        window.location.href = '/';
+        return '<span class="output-muted">navigating to ~ ...</span>';
+      }
+      if (target === 'projects' || target === '~/projects') {
+        window.location.href = '/projects';
+        return '<span class="output-muted">navigating to ~/projects ...</span>';
+      }
+      return `<span class="output-error">no such directory: ${escapeHtml(target)}</span>`;
+    },
+
+    pwd() {
+      return `<span class="output-result">${getCwd()}</span>`;
+    },
+
+    date() {
+      return `<span class="output-result">${new Date().toString()}</span>`;
+    },
+
+    echo(args) {
+      return `<span class="output-result">${escapeHtml(args.join(' '))}</span>`;
+    },
+
+    clear() {
+      output.innerHTML = '';
+      return null; // don't append anything
+    },
+
+    exit() {
+      closeTerminal();
+      return null;
+    },
+
+    // ── fun commands (listed in help) ──────────────
+
+    cowsay(args) {
+      const text = args.length ? args.join(' ') : 'moo';
+      const line = '─'.repeat(text.length + 2);
+      return `<span class="output-result"> ┌${line}┐
+ │ ${escapeHtml(text)} │
+ └${line}┘
+        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||</span>`;
+    },
+
+    fortune() {
+      const quotes = [
+        '"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler',
+        '"Design is not just what it looks like and feels like. Design is how it works." — Steve Jobs',
+        '"The best error message is the one that never shows up." — Thomas Fuchs',
+        '"Simplicity is the ultimate sophistication." — Leonardo da Vinci',
+        '"First, solve the problem. Then, write the code." — John Johnson',
+        '"Code is like humor. When you have to explain it, it\'s bad." — Cory House',
+        '"Make it work, make it right, make it fast." — Kent Beck',
+        '"The function of good software is to make the complex appear to be simple." — Grady Booch',
+        '"Talk is cheap. Show me the code." — Linus Torvalds',
+        '"A designer knows he has achieved perfection not when there is nothing left to add, but when there is nothing left to take away." — Antoine de Saint-Exupéry',
+        '"In theory, there is no difference between theory and practice. In practice, there is." — Yogi Berra',
+        '"Weeks of coding can save you hours of planning." — Unknown',
+        '"It works on my machine." — Every developer, ever',
+        '"There are only two hard things in Computer Science: cache invalidation and naming things." — Phil Karlton',
+      ];
+      const pick = quotes[Math.floor(Math.random() * quotes.length)];
+      return `<span class="output-cyan">${escapeHtml(pick)}</span>`;
+    },
+
+    // ── visual effect commands (hidden / easter eggs) ──
+
+    matrix() {
+      runMatrixRain();
+      return '<span class="output-accent">wake up, Neo...</span>';
+    },
+
+    hack() {
+      runHackSequence();
+      return null;
+    },
+
+    crash() {
+      runKernelPanic();
+      return null;
+    },
+
+    reboot() {
+      runRebootSequence();
+      return null;
+    },
+
+    flip() {
+      document.documentElement.style.transition = 'transform 0.5s ease';
+      document.documentElement.style.transform = 'rotate(180deg)';
+      appendOutput('<span class="output-amber">(╯°□°)╯︵ ┻━┻</span>');
+      setTimeout(() => {
+        document.documentElement.style.transform = '';
+        setTimeout(() => { document.documentElement.style.transition = ''; }, 500);
+        appendOutput('<span class="output-muted">┬─┬ ノ( ゜-゜ノ) ...okay, back to normal.</span>');
+      }, 4000);
+      return null;
+    },
+
+    invert() {
+      document.documentElement.style.transition = 'filter 0.3s ease';
+      document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+      setTimeout(() => {
+        document.documentElement.style.filter = '';
+        setTimeout(() => { document.documentElement.style.transition = ''; }, 300);
+      }, 4000);
+      return '<span class="output-amber">entering the upside down...</span>';
+    },
+
+    disco() {
+      runDisco();
+      return '<span class="output-accent">🪩</span>';
+    },
+  };
+
+  // ── visual effects ──────────────────────────────
+
+  function runMatrixRain() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'matrix-canvas';
+    Object.assign(canvas.style, {
+      position: 'fixed', inset: '0', zIndex: '9999',
+      pointerEvents: 'none', opacity: '0.9',
+    });
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    let frames = 0;
+    const maxFrames = 180; // ~6 seconds at 30fps
+    const interval = setInterval(() => {
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#4ade80';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+
+      frames++;
+      if (frames > maxFrames) {
+        clearInterval(interval);
+        canvas.style.transition = 'opacity 1s';
+        canvas.style.opacity = '0';
+        setTimeout(() => canvas.remove(), 1000);
+      }
+    }, 33);
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  async function runHackSequence() {
+    input.disabled = true;
+    const lines = [
+      ['output-muted', 'initializing exploit framework...'],
+      ['output-muted', 'scanning ports on target...'],
+      ['output-result', '  22/tcp   open   ssh'],
+      ['output-result', '  80/tcp   open   http'],
+      ['output-result', '  443/tcp  open   https'],
+      ['output-result', '  3000/tcp open   node'],
+      ['output-result', '  8080/tcp open   http-proxy'],
+      ['output-muted', 'vulnerability found: CVE-2026-DAGAS'],
+      ['output-muted', 'injecting payload...'],
+      ['output-amber', 'bypassing firewall ████████░░ 80%'],
+      ['output-amber', 'bypassing firewall ██████████ 100%'],
+      ['output-muted', 'decrypting credentials...'],
+      ['output-result', '  password: ********'],
+      ['output-result', '  password: d4g4s_w4s_h3r3'],
+      ['output-accent', ''],
+      ['output-accent', '  ╔═══════════════════════════╗'],
+      ['output-accent', '  ║     ACCESS GRANTED        ║'],
+      ['output-accent', '  ╚═══════════════════════════╝'],
+    ];
+
+    for (const [cls, text] of lines) {
+      appendOutput(`<span class="${cls}">${text}</span>`);
+      await sleep(200 + Math.random() * 300);
+    }
+
+    // glitch the page
+    await sleep(500);
+    const el = document.querySelector('main');
+    if (el) {
+      el.style.transition = 'none';
+      for (let i = 0; i < 6; i++) {
+        el.style.transform = `translate(${(Math.random()-0.5)*20}px, ${(Math.random()-0.5)*10}px) skewX(${(Math.random()-0.5)*5}deg)`;
+        el.style.filter = `hue-rotate(${Math.random()*360}deg) brightness(${0.8+Math.random()*0.4})`;
+        await sleep(80);
+      }
+      el.style.transform = '';
+      el.style.filter = '';
+    }
+
+    await sleep(400);
+    appendOutput('<span class="output-muted">just kidding. but i had you for a second there.</span>');
+    appendOutput('<span class="output-muted">type <span class="output-cyan">help</span> for actual commands.</span>');
+    input.disabled = false;
+    input.focus();
+  }
+
+  async function runKernelPanic() {
+    const overlay = document.createElement('div');
+    Object.assign(overlay.style, {
+      position: 'fixed', inset: '0', zIndex: '99999',
+      background: '#000', color: '#fff', fontFamily: 'monospace',
+      fontSize: '13px', padding: '40px', lineHeight: '1.8',
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      alignItems: 'center', textAlign: 'center',
+    });
+    overlay.innerHTML = `
+      <div style="max-width: 600px;">
+        <p style="font-size: 24px; margin-bottom: 20px;">⚠️</p>
+        <p style="margin-bottom: 16px;">You need to restart your computer. Hold down the Power button for several seconds or press the Restart button.</p>
+        <p style="color: #888; margin-bottom: 8px;">Vous devez redémarrer votre ordinateur. Maintenez la touche de démarrage enfoncée pendant plusieurs secondes.</p>
+        <p style="color: #888; margin-bottom: 8px;">Sie müssen Ihren Computer neu starten. Halten Sie den Ein-/Ausschalter einige Sekunden gedrückt.</p>
+        <p style="color: #888; margin-bottom: 8px;">Devi riavviare il computer. Tieni premuto il tasto di accensione per alcuni secondi.</p>
+        <p style="color: #888; margin-bottom: 8px;">Du behöver starta om datorn. Håll strömknappen intryckt i några sekunder.</p>
+        <p style="color: #555; margin-top: 20px; font-size: 11px;">panic(cpu 0 caller 0xffffff): "dagas.dev: portfolio too powerful"</p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    await sleep(4000);
+    overlay.style.transition = 'opacity 0.5s';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.remove();
+      appendOutput('<span class="output-amber">gotcha. 😏</span>');
+    }, 500);
+  }
+
+  async function runRebootSequence() {
+    input.disabled = true;
+    const overlay = document.createElement('div');
+    Object.assign(overlay.style, {
+      position: 'fixed', inset: '0', zIndex: '99999',
+      background: '#000', color: '#4ade80', fontFamily: 'monospace',
+      fontSize: '13px', padding: '40px', lineHeight: '1.8',
+      overflow: 'hidden',
+    });
+    document.body.appendChild(overlay);
+
+    const bootLines = [
+      'BIOS v3.14 — DAGAS Systems Inc.',
+      'Memory test: 16384 MB OK',
+      'Detecting drives... SSD0: portfolio-nvme 256GB',
+      'Loading bootloader...',
+      '',
+      'dagas-os v2.0.26 (tty1)',
+      '',
+      '[  OK  ] Started network manager.',
+      '[  OK  ] Mounted /dev/projects.',
+      '[  OK  ] Started creative-engine.service.',
+      '[  OK  ] Started carlos-core-agent.service.',
+      '[  OK  ] Started coffee-supply-monitor.service.',
+      '[ WARN ] Low coffee levels detected.',
+      '[  OK  ] Started portfolio-server.service.',
+      '',
+      'Welcome to dagas-os. All systems operational.',
+      '',
+      'Resuming session...',
+    ];
+
+    for (const line of bootLines) {
+      const p = document.createElement('p');
+      p.textContent = line;
+      if (line.includes('WARN')) p.style.color = '#fbbf24';
+      if (line.includes('Welcome')) p.style.color = '#22d3ee';
+      overlay.appendChild(p);
+      overlay.scrollTop = overlay.scrollHeight;
+      await sleep(150 + Math.random() * 200);
+    }
+
+    await sleep(800);
+    overlay.style.transition = 'opacity 0.5s';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.remove();
+      appendOutput('<span class="output-accent">system restored. all processes running.</span>');
+      input.disabled = false;
+      input.focus();
+    }, 500);
+  }
+
+  function runDisco() {
+    const colors = ['#f87171', '#fbbf24', '#4ade80', '#22d3ee', '#a78bfa', '#fb7185'];
+    let i = 0;
+    const interval = setInterval(() => {
+      document.documentElement.style.filter = `hue-rotate(${i * 60}deg) saturate(1.5) brightness(1.1)`;
+      i++;
+    }, 100);
+    setTimeout(() => {
+      clearInterval(interval);
+      document.documentElement.style.filter = '';
+    }, 4000);
+  }
+
+  // ── rm -rf / special (page dissolve) ────────────
+
+  async function runPageDissolve() {
+    input.disabled = true;
+    const mainEl = document.querySelector('main');
+    if (!mainEl) return;
+    const children = Array.from(mainEl.querySelectorAll(':scope > *'));
+
+    appendOutput('<span class="output-error">deleting files...</span>');
+    await sleep(300);
+
+    // dissolve page elements one by one
+    for (const child of children) {
+      child.style.transition = 'all 0.3s ease';
+      child.style.opacity = '0';
+      child.style.transform = 'translateX(20px)';
+      const fakePath = '/home/dagas/' + (child.tagName.toLowerCase()) + '_' + Math.random().toString(36).slice(2, 6);
+      appendOutput(`<span class="output-error">  rm ${fakePath}</span>`);
+      await sleep(150);
+    }
+
+    await sleep(600);
+    appendOutput('<span class="output-error">rm: all files deleted.</span>');
+    await sleep(800);
+    appendOutput('<span class="output-amber">oops.</span>');
+    await sleep(1500);
+    appendOutput('<span class="output-muted">restoring from backup...</span>');
+    await sleep(800);
+
+    // restore
+    for (const child of children) {
+      child.style.opacity = '1';
+      child.style.transform = '';
+      await sleep(80);
+    }
+    await sleep(300);
+    for (const child of children) {
+      child.style.transition = '';
+    }
+
+    appendOutput('<span class="output-accent">backup restored. don\'t try that again.</span>');
+    input.disabled = false;
+    input.focus();
+  }
+
+  // easter eggs
+  const easterEggs = {
+    'sudo': () => '<span class="output-amber">nice try. you\'re not root here.</span>',
+    'rm -rf /': () => { runPageDissolve(); return null; },
+    'sudo rm -rf /': () => { runPageDissolve(); return null; },
+    'rm': () => '<span class="output-error">rm: missing operand. nice try though.</span>',
+    'vim': () => '<span class="output-amber">you\'ll never escape. (press Escape to close terminal instead)</span>',
+    'emacs': () => '<span class="output-muted">let\'s not start this debate.</span>',
+    ':q': () => '<span class="output-amber">this isn\'t vim. you\'re safe.</span>',
+    ':q!': () => '<span class="output-amber">you\'re really stuck in vim mentally, huh?</span>',
+    ':wq': () => '<span class="output-amber">nothing to save. this isn\'t vim. breathe.</span>',
+    'hello': () => '<span class="output-accent">hey there! type <span class="output-cyan">help</span> to see what i can do.</span>',
+    'hi': () => '<span class="output-accent">hey! welcome to my terminal. try <span class="output-cyan">help</span></span>',
+    'hey': () => '<span class="output-accent">sup! try <span class="output-cyan">help</span> to explore.</span>',
+    'ping': () => '<span class="output-accent">pong 🏓</span>',
+    'pong': () => '<span class="output-accent">ping 🏓</span>',
+    'man': () => '<span class="output-muted">no manual entry. real hackers don\'t read docs. (just kidding, read the docs.)</span>',
+    'ls -la': () => commands.ls(),
+    'ls projects': () => commands.ls(),
+    'yes': () => '<span class="output-accent">yes yes yes yes yes yes yes yes yes yes yes</span>',
+    'no': () => '<span class="output-muted">understandable, have a nice day.</span>',
+    'why': () => '<span class="output-muted">because i can.</span>',
+    'top': () => '<span class="output-result">PID  PROC           CPU   MEM\n1    portfolio       2.1%  48MB\n2    creative-engine 12.4% 256MB\n3    carlos-core     8.7%  512MB\n4    coffee-monitor  99.9% 1MB\n<span class="output-amber">warning: coffee-monitor consuming excessive resources</span></span>',
+    'whoami': () => commands.whoami(),
+    'curl': () => '<span class="output-muted">try <span class="output-cyan">contact</span> instead — less verbose.</span>',
+    'wget': () => '<span class="output-muted">you wouldn\'t download a portfolio...</span>',
+    'npm install': () => '<span class="output-amber">added 847 packages in 42s\n12 vulnerabilities (3 moderate, 9 existential)</span>',
+    'git push': () => '<span class="output-error">error: you don\'t have push access to this portfolio.\ntry forking your own life instead.</span>',
+    'git commit': () => '<span class="output-muted">nothing to commit, working tree clean.\n(your life, however, could use some commits)</span>',
+    'apt-get install talent': () => '<span class="output-accent">talent is already the newest version.</span>',
+    'brew install talent': () => '<span class="output-accent">talent: already installed and pouring ☕</span>',
+    'ssh root@dagas.dev': () => '<span class="output-error">Permission denied (publickey).\njust kidding — there\'s no server, it\'s a static site.</span>',
+    'cat /etc/passwd': () => '<span class="output-error">nice try, script kiddie.</span>',
+    'uptime': () => { const days = Math.floor((Date.now() - new Date('1996-01-01').getTime()) / 86400000); return `<span class="output-result">up ${days} days (since jan 1996, give or take)</span>`; },
+    'nmap localhost': () => '<span class="output-result">Starting Nmap 7.94 ( https://nmap.org )\nPORT      STATE   SERVICE\n22/tcp    closed  ssh\n80/tcp    open    http (portfolio)\n443/tcp   open    https (portfolio)\n1337/tcp  open    <span class="output-accent">waste-collector</span>\n3000/tcp  open    carlos-core\n8080/tcp  open    creative-engine\n8443/tcp  filtered <span class="output-amber">classified</span>\n\nNmap done: 1 IP address (1 host up)</span>',
+    'cmatrix': () => { commands.matrix(); return null; },
+    'hack the planet': () => { commands.hack(); return null; },
+    'make me a sandwich': () => '<span class="output-muted">you\'re not using sudo.</span>',
+    'sudo make me a sandwich': () => '<span class="output-accent">okay. 🥪</span>',
+    'konami': () => '<span class="output-accent">↑ ↑ ↓ ↓ ← → ← → B A — you know the classics.</span>',
+    'rickroll': () => { window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank'); return '<span class="output-accent">never gonna give you up...</span>'; },
+    'coffee': () => '<span class="output-result">  ( (\n   ) )\n ........\n |      |]\n \\      /\n  `----\'\n<span class="output-amber">brewing...</span></span>',
+    'beer': () => '<span class="output-result">  .~~~~.\n  |    |\n  |    |\n  |    |\n  `----\'\n<span class="output-amber">cheers! 🍺</span></span>',
+  };
+
+  // ── execute ──────────────────────────────────────
+
+  function execute(raw) {
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+
+    commandHistory.push(trimmed);
+    historyIndex = commandHistory.length;
+
+    appendCmd(trimmed);
+
+    // check easter eggs first (full string match)
+    const lowerFull = trimmed.toLowerCase();
+    if (easterEggs[lowerFull]) {
+      const result = easterEggs[lowerFull]();
+      if (result) appendOutput(result);
+      return;
+    }
+
+    // parse command + args
+    const parts = trimmed.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+
+    if (commands[cmd]) {
+      const result = commands[cmd](args);
+      if (result) appendOutput(result);
+    } else {
+      appendOutput(`<span class="output-error">command not found: ${escapeHtml(cmd)}</span>\n<span class="output-muted">type <span class="output-cyan">help</span> for available commands</span>`);
+    }
+  }
+
+  // ── event listeners ──────────────────────────────
+
+  toggle.addEventListener('click', openTerminal);
+  closeBtn.addEventListener('click', closeTerminal);
+
+  // keyboard shortcut: backtick to toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '`' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      // don't toggle if user is typing in a regular input/textarea
+      if (document.activeElement === input) return;
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+      e.preventDefault();
+      if (isOpen) closeTerminal();
+      else openTerminal();
+    }
+    // escape to close
+    if (e.key === 'Escape' && isOpen) {
+      closeTerminal();
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      execute(input.value);
+      input.value = '';
+    }
+    // history navigation
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.value = commandHistory[historyIndex];
+      }
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        input.value = commandHistory[historyIndex];
+      } else {
+        historyIndex = commandHistory.length;
+        input.value = '';
+      }
+    }
+    // tab completion
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const val = input.value.toLowerCase().trim();
+      const parts = val.split(/\s+/);
+
+      if (parts.length === 1) {
+        // complete command names
+        const matches = Object.keys(commands).filter(c => c.startsWith(parts[0]));
+        if (matches.length === 1) input.value = matches[0] + ' ';
+      } else if (parts[0] === 'cat' || parts[0] === 'open') {
+        // complete project names
+        const partial = parts.slice(1).join(' ');
+        const matches = info.projects.filter(p => p.title.toLowerCase().startsWith(partial));
+        if (matches.length === 1) input.value = parts[0] + ' ' + matches[0].title;
+      }
+    }
+  });
+
+  // welcome message on first open
+  let hasOpened = false;
+  const originalOpen = openTerminal;
+  openTerminal = function() {
+    originalOpen();
+    if (!hasOpened) {
+      hasOpened = true;
+      appendOutput(`<span class="output-accent">welcome to dagas.dev</span>
+<span class="output-muted">type <span class="output-cyan">help</span> to see available commands</span>`);
+    }
+  };
+
+  updateCwd();
+</script>
