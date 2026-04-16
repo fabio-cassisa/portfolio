@@ -1,0 +1,30 @@
+---
+import { info } from '@data/info';
+---
+
+<section class="terminal-window mb-16">
+  <div class="terminal-titlebar">
+    <span class="terminal-dot terminal-dot--red"></span>
+    <span class="terminal-dot terminal-dot--amber"></span>
+    <span class="terminal-dot terminal-dot--green"></span>
+    <span class="ml-2">dagas@web — neofetch</span>
+  </div>
+  <div class="terminal-body text-xs md:text-sm">
+    <pre class="text-[var(--color-text-muted)] mb-4 leading-relaxed"><span class="text-[var(--color-accent)]">dagas</span>@web
+──────────</pre>
+    <div class="space-y-1">
+      {
+        Object.entries(info.stack).map(([category, items]) => (
+          <div class="flex flex-col sm:flex-row sm:flex-wrap">
+            <span class="text-[var(--color-cyan)] sm:w-32 shrink-0 font-medium">
+              {category}
+            </span>
+            <span class="text-[var(--color-text)]">
+              {(items as string[]).join(' · ')}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

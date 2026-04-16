@@ -1,39 +1,51 @@
 ---
-import { info } from "@data";
+import Layout from '@layouts/Layout.astro';
+import Hero from '@components/Hero.astro';
+import Neofetch from '@components/Neofetch.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import ExperienceItem from '@components/ExperienceItem.astro';
+import EducationItem from '@components/EducationItem.astro';
+import SectionHeader from '@components/SectionHeader.astro';
+import { info } from '@data/info';
 
-import Layout from "@layouts/Layout.astro";
-import Hero from "@components/home/Hero.astro";
-import Experience from "@components/home/Experience.astro";
-import ProjectsWrapper from "@components/general/ProjectsWrapper.astro";
-import MetaHead from "@components/general/MetaHead.astro";
-
-const featureProjects = info.projects.reduce((accumulator, project) => {
-  if (accumulator.length < 6 && project.isFeatured) {
-    accumulator.push(project);
-  }
-  return accumulator;
-}, []);
+const featuredProjects = info.projects.filter((p) => p.featured);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <MetaHead
-      title={"Portfolio"}
-      description={info.about}
-      ogImageUrl={"/assets/images/profile.png"}
-    />
-  </head>
+<Layout>
+  <Hero />
+  <Neofetch />
 
-  <body>
-    <Layout>
-      <Hero name={info.name} about={info.about} />
-      <Experience title={"EXPERIENCE"} details={info.experience} />
-      <Experience title={"EDUCATION"} details={info.education} />
-      <section>
-        <h2 class="w-[15rem] dark:text-light mt-16">FEATURE PROJECTS</h2>
-        <ProjectsWrapper projects={featureProjects} />
-      </section>
-    </Layout>
-  </body>
-</html>
+  <hr class="divider" />
+
+  {/* featured projects */}
+  <section class="mb-16">
+    <SectionHeader label="featured projects" />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+    <div class="mt-4 text-right">
+      <a
+        href="/projects"
+        class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
+      >
+        all projects →
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  {/* experience */}
+  <section class="mb-16">
+    <SectionHeader label="experience" />
+    {info.experience.map((item) => <ExperienceItem item={item} />)}
+  </section>
+
+  <hr class="divider" />
+
+  {/* education */}
+  <section class="mb-16">
+    <SectionHeader label="education" />
+    {info.education.map((item) => <EducationItem item={item} />)}
+  </section>
+</Layout>
