@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dagas.dev/sitemap-index.xml
+Sitemap: https://dagas-portfolio.vercel.app/sitemap-index.xml
