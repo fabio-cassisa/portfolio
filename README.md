@@ -7,7 +7,7 @@ this one boots like a system, runs like a terminal, and hides things for people 
 
 ### live
 
-🟢 [dagas.dev](https://dagas.dev)
+🟢 [dagas-portfolio.vercel.app](https://dagas-portfolio.vercel.app)
 
 ### what's in here
 

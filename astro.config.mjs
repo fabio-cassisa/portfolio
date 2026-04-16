@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://dagas.dev',
+  site: 'https://dagas-portfolio.vercel.app',
 
   vite: {
     plugins: [tailwindcss()],

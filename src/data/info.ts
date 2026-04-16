@@ -5,7 +5,7 @@ export const info = {
   name: 'Fabio Cassisa',
   handle: 'dagas',
   title: 'creative technologist',
-  baseUrl: 'https://dagas.dev',
+  baseUrl: 'https://dagas-portfolio.vercel.app',
 
   about: [
     'designer, developer, and everything in between.',
