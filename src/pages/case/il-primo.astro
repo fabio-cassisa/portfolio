@@ -1,0 +1,46 @@
+---
+import CaseLayout from '@components/CaseLayout.astro';
+import ProcessFlow from '@components/ProcessFlow.astro';
+
+const phases = [
+  { label: 'Fetch', caption: '~60 feeds · 30h' },
+  { label: 'Compose', caption: 'claude · forced tool' },
+  { label: 'Ground', caption: 'cite or drop' },
+  { label: 'Publish', caption: 'static · edge' },
+];
+---
+
+<CaseLayout
+  slug="il-primo"
+  title="il primo"
+  description="case study — a personal morning paper that builds itself every day: rss feeds grouped into cited stories by claude, with grounding checks in code, published as a static trilingual site."
+  intro={[
+    'Keeping up across world news, Europe, Italy, the Nordics, design and science means a lot of feeds, and most news apps are built for engagement, not for being done.',
+    'Il Primo is one paper instead: built automatically every morning, aimed at a 20-minute read. Claude does the editing, and code checks every story before it ships.',
+  ]}
+  tech={['node.js', 'claude api', 'rss', 'github actions', 'cloudflare workers']}
+  live="https://oggi.ilprimo.workers.dev"
+>
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// process'}</h3>
+  <div class="mb-12">
+    <ProcessFlow phases={phases} title="feeds to front page" />
+  </div>
+
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// what it does'}</h3>
+  <ul class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-12 max-w-2xl space-y-2">
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>reads ~60 outlets across eight sections and keeps the last 30 hours, de-duplicated</li>
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>Claude groups items into stories through a forced tool call, so the output is structured JSON rather than prose</li>
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>every story must cite feed items by id: unknown ids are stripped in code, and news with fewer than two outlets is dropped</li>
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>sections run in order and are told what earlier ones covered, so nothing repeats</li>
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>English source, translated to Italian and Swedish; a GitHub Actions cron builds it and Cloudflare serves it</li>
+    <li><span class="text-[var(--color-accent)] mr-2">→</span>no API key? it falls back to a headlines-only edition, so a morning never ships empty</li>
+  </ul>
+
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// outcome'}</h3>
+  <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl">
+    A daily edition with an archive, built and published without anyone touching
+    it. The design rule underneath: let the model edit, but never let it have the
+    last word. Claude can't add a link that wasn't in a feed, and every story shows
+    its sources so the reader can judge.
+  </p>
+</CaseLayout>

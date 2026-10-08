@@ -46,8 +46,8 @@ src/
 ├── components/   # navbar, footer, hero, neofetch, terminal, project cards
 ├── data/         # info.ts — all content lives here
 ├── layouts/      # single layout with view transitions
-├── pages/        # index, projects, 404
-└── styles/       # global.css — terminal design system
+├── pages/        # index, projects, lab, resume, 404, case/* studies
+└── styles/       # global.css — terminal design system · resume.css — print sheet
 ```
 
 update `src/data/info.ts` to change what the site displays.

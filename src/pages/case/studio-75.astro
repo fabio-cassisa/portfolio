@@ -29,12 +29,12 @@ const built = [
   live="https://studio-75.vercel.app"
   liveLabel="studio-75.vercel.app"
 >
-  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">// process</h3>
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// process'}</h3>
   <div class="mb-12">
     <ProcessFlow phases={phases} title="brief to build" />
   </div>
 
-  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">// what's in it</h3>
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{"// what's in it"}</h3>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
     {built.map((x) => (
       <div class="terminal-window">
@@ -46,7 +46,7 @@ const built = [
     ))}
   </div>
 
-  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">// making it fast</h3>
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// making it fast'}</h3>
   <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4 max-w-2xl">
     Audio-reactive canvas plus smooth-scroll plus GSAP is exactly the mix that
     makes older laptops wheeze. A dedicated performance pass fixed that without
@@ -59,7 +59,7 @@ const built = [
     <li><span class="text-[var(--color-accent)] mr-2">→</span><code>prefers-reduced-motion</code> respected — a static frame for those who ask</li>
   </ul>
 
-  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">// outcome</h3>
+  <h3 class="text-xs font-semibold text-[var(--color-cyan)] uppercase tracking-widest mb-4">{'// outcome'}</h3>
   <ul class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl space-y-2">
     <li><span class="text-[var(--color-accent)] mr-2">→</span>a site that sounds like the studio, live on Vercel</li>
     <li><span class="text-[var(--color-accent)] mr-2">→</span>zero runtime API keys — Spotify data baked at build</li>

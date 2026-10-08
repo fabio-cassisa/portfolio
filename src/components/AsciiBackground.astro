@@ -36,6 +36,8 @@
     overflow: hidden;
     user-select: none;
   }
+  /* wide pages (home) run a 1024px column — keep the panes in its gutter */
+  :global(body[data-wide]) .ascii-pane { width: calc((100% - 1100px) / 2); }
   .ascii-left {
     left: 0;
     text-align: right;

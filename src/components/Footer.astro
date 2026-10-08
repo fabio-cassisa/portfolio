@@ -22,7 +22,7 @@ import { info } from '@data/info';
     <span class="inline-flex items-center gap-2">
       <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
       <span id="footer-clock" style="font-variant-numeric:tabular-nums">--:--:--</span>
-      <span class="text-[var(--color-text-muted)]">CET</span>
+      <span id="footer-tz" class="text-[var(--color-text-muted)]">CET</span>
     </span>
     <p>
       <span class="text-[var(--color-accent)]">{info.name.toLowerCase()}</span> · 2024–{new Date().getFullYear()}
@@ -31,12 +31,23 @@ import { info } from '@data/info';
 </footer>
 
 <script>
+  // Malmö time, not the visitor's — the label follows CET/CEST
+  const clockFmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Stockholm',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'short',
+  });
   function tickClock() {
     const el = document.getElementById('footer-clock');
     if (!el) return;
-    const d = new Date();
-    const p = (n: number) => String(n).padStart(2, '0');
-    el.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    const parts = clockFmt.formatToParts(new Date());
+    const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+    el.textContent = `${get('hour')}:${get('minute')}:${get('second')}`;
+    const tz = document.getElementById('footer-tz');
+    if (tz) tz.textContent = get('timeZoneName');
   }
   tickClock();
   setInterval(tickClock, 1000);

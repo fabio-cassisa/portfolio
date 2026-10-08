@@ -250,6 +250,7 @@ const serializedInfo = JSON.stringify(info);
   const cwdEl = document.getElementById('terminal-cwd');
 
   let isOpen = false;
+  let hasOpened = false;
   let commandHistory = [];
   let historyIndex = -1;
 
@@ -271,6 +272,11 @@ const serializedInfo = JSON.stringify(info);
     expanded.setAttribute('aria-hidden', 'false');
     input.focus();
     updateCwd();
+    if (!hasOpened) {
+      hasOpened = true;
+      appendOutput(`<span class="output-accent">welcome to dagas.dev</span>
+<span class="output-muted">type <span class="output-cyan">help</span> to see available commands</span>`);
+    }
   }
 
   function closeTerminal() {
@@ -279,6 +285,7 @@ const serializedInfo = JSON.stringify(info);
     terminal.classList.add('terminal-collapsed');
     expanded.classList.remove('is-max');
     expanded.setAttribute('aria-hidden', 'true');
+    input.blur();
   }
 
   function appendOutput(html, className = 'output-result') {
@@ -291,6 +298,17 @@ const serializedInfo = JSON.stringify(info);
 
   function appendCmd(cmd) {
     appendOutput(escapeHtml(cmd), 'output-cmd');
+  }
+
+  // an anchor click goes through astro's client router (keeps the persisted
+  // terminal + its scrollback); pages without the router fall back to a full load
+  function go(href) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.hidden = true;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 
   function escapeHtml(str) {
@@ -313,7 +331,7 @@ const serializedInfo = JSON.stringify(info);
   <span class="output-cyan">history</span>         work experience
   <span class="output-cyan">education</span>       education
   <span class="output-cyan">contact</span>         social links
-  <span class="output-cyan">cd &lt;page&gt;</span>       navigate (~ projects lab)
+  <span class="output-cyan">cd &lt;page&gt;</span>       navigate (~ projects lab resume)
   <span class="output-cyan">ascii &lt;cmd&gt;</span>     on·off·next·speed &lt;slow|normal|fast&gt;
   <span class="output-cyan">cowsay &lt;text&gt;</span>   moo
   <span class="output-cyan">fortune</span>         random wisdom
@@ -389,7 +407,7 @@ const serializedInfo = JSON.stringify(info);
       const project = info.projects.find(p => p.title.toLowerCase() === name);
       if (!project) return `<span class="output-error">project not found: ${escapeHtml(name)}</span>\n<span class="output-muted">try: ls</span>`;
       if (!project.caseStudy) return `<span class="output-muted">no case study for ${escapeHtml(project.title)} — try: open ${escapeHtml(project.title)}</span>`;
-      window.location.href = project.caseStudy;
+      go(project.caseStudy);
       return `<span class="output-muted">opening case study: ${escapeHtml(project.title)} ...</span>`;
     },
 
@@ -453,20 +471,16 @@ const serializedInfo = JSON.stringify(info);
     },
 
     cd(args) {
-      const target = args[0]?.toLowerCase().trim();
-      if (!target || target === '~' || target === '/') {
-        window.location.href = '/';
+      const target = (args[0] || '').toLowerCase().trim().replace(/^~\/?/, '').replace(/\/$/, '');
+      if (!target || target === '/') {
+        go('/');
         return '<span class="output-muted">navigating to ~ ...</span>';
       }
-      if (target === 'projects' || target === '~/projects') {
-        window.location.href = '/projects';
-        return '<span class="output-muted">navigating to ~/projects ...</span>';
+      if (['projects', 'lab', 'resume'].includes(target)) {
+        go('/' + target);
+        return `<span class="output-muted">navigating to ~/${target} ...</span>`;
       }
-      if (target === 'lab' || target === '~/lab') {
-        window.location.href = '/lab';
-        return '<span class="output-muted">navigating to ~/lab ...</span>';
-      }
-      return `<span class="output-error">no such directory: ${escapeHtml(target)}</span>\n<span class="output-muted">try: ~ · projects · lab</span>`;
+      return `<span class="output-error">no such directory: ${escapeHtml(target)}</span>\n<span class="output-muted">try: ~ · projects · lab · resume</span>`;
     },
 
     pwd() {
@@ -966,18 +980,6 @@ const serializedInfo = JSON.stringify(info);
       }
     }
   });
-
-  // welcome message on first open
-  let hasOpened = false;
-  const originalOpen = openTerminal;
-  openTerminal = function() {
-    originalOpen();
-    if (!hasOpened) {
-      hasOpened = true;
-      appendOutput(`<span class="output-accent">welcome to dagas.dev</span>
-<span class="output-muted">type <span class="output-cyan">help</span> to see available commands</span>`);
-    }
-  };
 
   updateCwd();
 
