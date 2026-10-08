@@ -208,11 +208,11 @@ export const info = {
     {
       title: 'net-assets-scraper',
       description:
-        'Chrome extension that scrapes ad creative assets from live web pages. Built for internal use at Adnami.',
+        'Chrome extension that pulls a brand kit off any website — logos, images, video, fonts, brand colours — with social-media scrapers for six platforms. Built for an ad-creative team, simple enough for sales and account managers.',
       tech: ['js', 'chrome extension', 'manifest v3'],
       discipline: 'tooling',
       github: 'https://github.com/fabio-cassisa/net-assets-scraper',
-      live: '',
+      live: 'https://github.com/fabio-cassisa/net-assets-scraper/releases/latest',
       thumbnail: '/images/netAssetsScraper.webp',
       tier: 1,
       featured: true,
@@ -221,7 +221,7 @@ export const info = {
     {
       title: 'dev-wellness',
       description:
-        'Developer wellness dashboard — focus timers, breathe exercises, habit tracking. A school final project built with a coursemate, then carried forward and polished solo.',
+        'Developer wellness dashboard — focus timer, breathing, habit and mood tracking. A Technigo team final project, then carried forward and polished solo.',
       tech: ['react', 'redux toolkit', 'vite'],
       discipline: 'web',
       github: 'https://github.com/fabio-cassisa/dev-wellness',
@@ -245,6 +245,20 @@ export const info = {
       private: true,
     },
     {
+      title: 'il-primo',
+      description:
+        'A personal morning paper that builds itself every day. Claude groups ~60 RSS feeds into cited stories, then grounding checks in code drop anything it can\'t back with a real source. Trilingual, static, on the edge.',
+      tech: ['node.js', 'claude api', 'github actions', 'cloudflare'],
+      discipline: 'ai',
+      github: '',
+      live: 'https://oggi.ilprimo.workers.dev',
+      thumbnail: '/images/ilPrimo.webp',
+      tier: 1,
+      featured: true,
+      private: true,
+      caseStudy: '/case/il-primo',
+    },
+    {
       title: 'lost-satellites',
       description:
         'Landing page for Lost Satellites — a design studio and indie game company based in Rome. Scroll-driven GSAP animations.',
@@ -260,7 +274,7 @@ export const info = {
     {
       title: 'my-tasks',
       description:
-        'Minimal task manager with drag-to-reorder, priority levels, dark/light theme.',
+        'Task manager with drag-to-reorder, priority levels, and dark/light theme. Started as a Technigo pair project, rewritten solo as v2.',
       tech: ['react', 'redux toolkit', 'vite'],
       discipline: 'web',
       github: 'https://github.com/fabio-cassisa/my-tasks',
@@ -315,8 +329,8 @@ export const info = {
     {
       title: '4foodies-landing',
       description:
-        'SPA landing page for a food-tech startup I co-founded.',
-      tech: ['js', 'html', 'css'],
+        'Landing page for the food-tech startup I co-founded — hero slider, animated pill nav, product grid. Work in progress.',
+      tech: ['next.js', 'ts', 'tailwind', 'framer motion'],
       discipline: 'web',
       github: 'https://github.com/fabio-cassisa/4foodies-landing',
       live: '',
@@ -326,11 +340,11 @@ export const info = {
     },
     {
       title: 'book-collection',
-      description: 'Book library app with planned API upgrade.',
-      tech: ['react', 'api'],
+      description: 'Filterable book library — genre, year, and rating filters, search, and a cart. Vanilla JS and DOM work, no framework.',
+      tech: ['js', 'html', 'css'],
       discipline: 'web',
       github: 'https://github.com/fabio-cassisa/book-collection',
-      live: '',
+      live: 'https://project-library-fabio.netlify.app',
       thumbnail: '',
       tier: 2,
       featured: false,
@@ -340,15 +354,6 @@ export const info = {
   // ── LAB ── experiments & eclectic work. The maker/artist/technologist range
   // that the client funnel deliberately doesn't show. Curated, not exhaustive.
   experiments: [
-    {
-      title: 'sculptr',
-      discipline: '3d',
-      blurb: 'Turn any SVG into an interactive 3D sculpture. Draw on a pixel canvas, type text, or paste SVG — it extrudes into a real-time 3D object with materials, lighting, animation, and export.',
-      tech: ['next.js', 'three.js', 'electron'],
-      github: 'https://github.com/fabio-cassisa/sculptr',
-      live: '',
-      year: '2025',
-    },
     {
       title: 'beat-builder',
       discipline: 'sound',

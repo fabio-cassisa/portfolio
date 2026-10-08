@@ -30,7 +30,7 @@
   /* fonts */
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code',
     ui-monospace, monospace;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: system-ui, -apple-system, sans-serif;
 }
 
 /* ============================================
@@ -77,24 +77,28 @@ body {
    typography
    ============================================ */
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-mono);
-  color: var(--color-text-bright);
-  font-weight: 600;
-}
+/* layered so tailwind utilities (text-*, font-*) on links and headings win —
+   unlayered element rules beat every @layer utilities class */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-mono);
+    color: var(--color-text-bright);
+    font-weight: 600;
+  }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-a:hover {
-  color: var(--color-accent);
-}
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  a:hover {
+    color: var(--color-accent);
+  }
 
-code {
-  font-family: var(--font-mono);
-  font-size: 0.9em;
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
 }
 
 /* ============================================

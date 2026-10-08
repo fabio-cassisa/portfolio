@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+# stray root-level screenshots / creative exports — never commit
+/*.png
